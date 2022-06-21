@@ -8,27 +8,28 @@ interface IAuthenticateRequest {
 }
 export class AuthenticateUserService {
 
-    async authenticate({ email, password }: IAuthenticateRequest) {
+    async authenticate({ email, password }: IAuthenticateRequest): Promise<string> {
 
         const userRepository = new UserRepository();
 
-        const user = await userRepository.findOne(email);
+        const userFound = await userRepository.findOne(email);
 
-        if (!user) {
+        if (!userFound) {
             throw new Error("Email/Password incorrect");
         }
         
-        const passwordMatch = await compare(password, user.password);        
+        const passwordMatch = await compare(password, userFound.password);        
 
         if (!passwordMatch) {
             throw new Error("Email/Password incorrect");
         }
 
         const token = sign({
-            email: user.email
+            email: userFound.email,
+            admin: userFound.admin
         },
         "b0ca81d582e0d1ef9536df4acc3e0d27", {
-            subject: user.id,
+            subject: userFound.id,
             expiresIn: "1d"
         });
 
