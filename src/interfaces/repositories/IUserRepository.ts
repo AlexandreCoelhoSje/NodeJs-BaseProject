@@ -4,7 +4,9 @@ export interface IUserRepository {
 
     list: () => Promise<User[]>;
 
-    findOne: (email: string) => Promise<User>;
+    findOne: (id: string) => Promise<User>;
+
+    findByEmail: (email: string) => Promise<User>;
 
     create: (userData: User) => Promise<User>;
 

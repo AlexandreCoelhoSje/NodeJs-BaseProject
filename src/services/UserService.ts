@@ -26,9 +26,9 @@ export class UserService {
         return await this.userRepository.list();
     }
 
-    async findOne(email: string): Promise<User> {
+    async findOne(id: string): Promise<User> {
 
-        const user = await this.userRepository.findOne(email);
+        const user = await this.userRepository.findOne(id);
 
         return user;
     }
@@ -38,7 +38,7 @@ export class UserService {
         if (!email)
             throw new Error("Email incorrect");
 
-        const userAlreadyExists = await this.userRepository.findOne(email);
+        const userAlreadyExists = await this.userRepository.findByEmail(email);
 
         if (userAlreadyExists)
             throw new Error("User already exists");
@@ -55,16 +55,16 @@ export class UserService {
         return user;
     }
 
-    async update({ email, name, admin = false }: IUserRequest): Promise<User> {
+    async update({ id, name, admin = false }: IUserRequest): Promise<User> {
 
         //check if the user exists
-        const userFound = await this.userRepository.findOne(email);
+        const userFound = await this.userRepository.findOne(id);
 
         if (!userFound)
             throw new Error("user not found");
 
         //non-admin user can only change their own data
-        if (!this.authenticatedUser.admin && this.authenticatedUser.email != email)
+        if (!this.authenticatedUser.admin && this.authenticatedUser.id != userFound.id)
             throw new Error("you cannot edit this user");
 
         //update user data, only admins can edit "admin" flag
@@ -75,14 +75,14 @@ export class UserService {
         return await this.userRepository.update(userFound);
     }
 
-    async delete(email: string): Promise<User> {
+    async delete(id: string): Promise<User> {
 
         //only admins can delete users
         if (!this.authenticatedUser.admin)
             throw new Error("You do not have permission to delete this user");
 
         //check if the user exists
-        const userFound = await this.userRepository.findOne(email);
+        const userFound = await this.userRepository.findOne(id);
 
         if (!userFound)
             throw new Error("user not found");

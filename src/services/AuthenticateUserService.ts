@@ -12,7 +12,7 @@ export class AuthenticateUserService {
 
         const userRepository = new UserRepository();
 
-        const userFound = await userRepository.findOne(email);
+        const userFound = await userRepository.findByEmail(email);
 
         if (!userFound) {
             throw new Error("Email/Password incorrect");

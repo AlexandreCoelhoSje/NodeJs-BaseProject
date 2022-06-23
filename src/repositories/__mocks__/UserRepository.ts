@@ -15,7 +15,7 @@ export class UserRepository implements IUserRepository {
         user.name = "Test User";
         user.email = "teste@test.com";
         user.admin = false;
-        user.password = "$2a$08$p1dKB2/hYjjd3qs.X95peOdkd0GAkac4RGrEqxs1YsiPfn7GvltbW";       
+        user.password = "$2a$08$p1dKB2/hYjjd3qs.X95peOdkd0GAkac4RGrEqxs1YsiPfn7GvltbW";
 
         this.users.push(user);
     }
@@ -25,17 +25,25 @@ export class UserRepository implements IUserRepository {
         return new Promise((resolve, reject) => resolve(this.users));
     }
 
-    async findOne(email: string): Promise<User> {
+    async findOne(id: string): Promise<User> {
 
-        return new Promise((resolve, reject) => 
-            
-            resolve(this.users.find((item) =>  item.email == email))
-        );
+        return new Promise((resolve, reject) => {
+
+            resolve(this.users.find((item) => item.id == id));
+        });
+    }
+
+    async findByEmail(email: string): Promise<User> {
+
+        return new Promise((resolve, reject) => {
+
+            resolve(this.users.find((item) => item.email == email));
+        });
     }
 
     async create(userData: User): Promise<User> {
 
-        const user =  new User();
+        const user = new User();
 
         user.name = userData.name;
         user.email = userData.email;
@@ -49,7 +57,7 @@ export class UserRepository implements IUserRepository {
 
     async update(user: User): Promise<User> {
 
-        const userToUpdate = this.users.find((currentUser: User) => user.id == currentUser.id );
+        const userToUpdate = this.users.find((currentUser: User) => user.id == currentUser.id);
 
         userToUpdate.name = user.name;
 
@@ -61,7 +69,7 @@ export class UserRepository implements IUserRepository {
         const userFound = this.users.find((current: User) => current.id == user.id);
 
         this.users = this.users.filter((currentUser: User) => currentUser.id != user.id);
-       
+
         return new Promise((resolve, reject) => resolve(userFound));
     }
 }

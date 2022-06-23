@@ -50,7 +50,7 @@ describe("test UserRepository", () => {
         expect(users.length).toBeGreaterThanOrEqual(1);
     });
 
-    it("Find one user", async () => {
+    it("Find one user by id", async () => {
 
         const userRepository = new UserRepository();
 
@@ -60,12 +60,27 @@ describe("test UserRepository", () => {
         const user = users[0];
 
         //User found
-        const userFound = await userRepository.findOne(user.email);
+        const userFound = await userRepository.findOne(user.id);
 
         expect(userFound).toStrictEqual(user);
 
         //User not found
-        const userNotFound = await userRepository.findOne("notexist@test.com");
+        const userNotFound = await userRepository.findOne("notExistId");
+
+        expect(userNotFound).toBeNull();
+    });
+
+    it("Find one user by email", async () => {
+
+        const userRepository = new UserRepository();
+      
+        //User found
+        const userFound = await userRepository.findByEmail("test@test.com.br");
+
+        expect(userFound.email).toBe("test@test.com.br");
+
+        //User not found
+        const userNotFound = await userRepository.findByEmail("notExistId");
 
         expect(userNotFound).toBeNull();
     });
