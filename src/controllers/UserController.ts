@@ -16,7 +16,9 @@ export default class UserController {
 
         const userService = new UserService(request.user);
 
-        const user = await userService.findOne(request.user.id);
+        const { id } = request.params;
+
+        const user = await userService.findOne(id);
 
         return response.json(user);
     }

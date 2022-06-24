@@ -11,7 +11,7 @@ AppDataSource.initialize().then(async () => {
         admin: true
     });
 
-    const userAlreadyExists = await userService.findOne("admin@email.com");
+    const userAlreadyExists = await userService.findByEmail("admin@email.com");
 
     if (!userAlreadyExists) {
 

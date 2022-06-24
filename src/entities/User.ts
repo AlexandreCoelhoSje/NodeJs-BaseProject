@@ -25,11 +25,14 @@ export class User {
     @UpdateDateColumn()
     updated_at?: Date;
 
-    constructor() {
+    constructor(name, email, admin, password) {
 
-        if (!this.id) {
+        if (!this.id)
             this.id = uuid();
-        }
-    }
 
+        this.name = name;
+        this.email = email;
+        this.admin = admin;
+        this.password = password;
+    }
 }

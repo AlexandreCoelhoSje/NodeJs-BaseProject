@@ -1,4 +1,4 @@
-import { FindOneOptions, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { AppDataSource } from "../database/data-source"
 import { User } from "../entities/User"
 import { IUserRepository } from "../interfaces/repositories/IUserRepository";
@@ -11,27 +11,27 @@ export class UserRepository implements IUserRepository {
 
         this.userRepository = AppDataSource.getRepository(User);
     }
-    
+
     async list(): Promise<User[]> {
 
         return await this.userRepository.find();
     }
 
     async findOne(id: string): Promise<User> {
-        
-        return await this.userRepository.findOne({ where: { id }});
+
+        return await this.userRepository.findOneBy({ id });
     }
 
     async findByEmail(email: string): Promise<User> {
-        
-        return await this.userRepository.findOne({ where: { email }});
+
+        return await this.userRepository.findOneBy({ email });
     }
 
     async create(userData: User): Promise<User> {
 
-        const user = this.userRepository.create(userData);
+        //const user = this.userRepository.create(userData);
 
-        return await this.userRepository.save(user);
+        return await this.userRepository.save(userData);
     }
 
     async update(user: User): Promise<User> {

@@ -33,6 +33,13 @@ export class UserService {
         return user;
     }
 
+    async findByEmail(email: string): Promise<User> {
+
+        const user = await this.userRepository.findByEmail(email);
+
+        return user;
+    }
+
     async create({ name, email, admin = false, password }: IUserRequest): Promise<User> {
 
         if (!email)
@@ -45,14 +52,11 @@ export class UserService {
 
         const passwordHash = await hash(password, 8);
 
-        const user = await this.userRepository.create({
-            name,
-            email,
-            admin,
-            password: passwordHash
-        });
+        const userData = new User(name, email, admin, passwordHash);
+console.log(userData);
+        const user = await this.userRepository.create(userData);
 
-        return user;
+        return userData;
     }
 
     async update({ id, name, admin = false }: IUserRequest): Promise<User> {
