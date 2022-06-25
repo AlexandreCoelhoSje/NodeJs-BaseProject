@@ -50,13 +50,14 @@ export class UserService {
         if (userAlreadyExists)
             throw new Error("User already exists");
 
+        if (!this.authenticatedUser.admin && admin)
+            throw new Error("You cannot add an admin user");
+
         const passwordHash = await hash(password, 8);
 
-        const userData = new User(name, email, admin, passwordHash);
-console.log(userData);
-        const user = await this.userRepository.create(userData);
+        const user = await this.userRepository.create({name, email, admin, password: passwordHash});
 
-        return userData;
+        return user;
     }
 
     async update({ id, name, admin = false }: IUserRequest): Promise<User> {

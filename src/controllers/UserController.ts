@@ -20,7 +20,10 @@ export default class UserController {
 
         const user = await userService.findOne(id);
 
-        return response.json(user);
+        if (user)
+            return response.json(user);
+        else
+            return response.status(404).send();
     }
 
     async create(request: Request, response: Response) {

@@ -13,7 +13,7 @@ describe("test UserService", () => {
         admin: true
     };
 
-    it("create new user", async () => {
+    it("create new user with admin", async () => {
         
         const userService = new UserService(authenticatedUser);
 
@@ -27,6 +27,14 @@ describe("test UserService", () => {
         
         //error case, email already exists
         expect(userService.create({ name: "Test Two", email: "othertest@email.com", admin: false, password: "12345" })).rejects.toThrow("User already exists");
+    });
+
+    it("create new user with non-admin", async () => {
+        
+        const userService = new UserService({...authenticatedUser, admin: false});
+
+        //error case, non-admin user trying to add admin user
+        expect(userService.create({ name: "Test Two", email: "usernonadmin@email.com", admin: true, password: "12345" })).rejects.toThrow("You cannot add an admin user");
     });
 
     it("list all users", async () => {
@@ -57,7 +65,7 @@ describe("test UserService", () => {
         expect(userNotFound).toBeUndefined();
     });
 
-    it("update user authenticated administrator", async () => {
+    it("update user authenticated admin", async () => {
 
         const userService = new UserService(authenticatedUser);        
         
@@ -73,16 +81,16 @@ describe("test UserService", () => {
         expect(userService.update({...userAdmin, id: "fake"})).rejects.toThrow("user not found");
     });
 
-    it("update user authenticated non-admin user", async () => {
+    it("update user authenticated non-admin", async () => {
 
         const userServiceNonAdmin = new UserService({...authenticatedUser, email: "nonadminuser@email.com", admin: false});
 
         //create user for test
         const userNonAdmin = await userServiceNonAdmin.create({ name: "Test Non Admin", email: "nonadminuser@email.com", admin: false, password: "12345" });
-        const userAdmin = await userServiceNonAdmin.create({ name: "Test Admin", email: "adminuser@email.com", admin: true, password: "12345" });
+        //const userAdmin = await userServiceNonAdmin.create({ name: "Test Admin", email: "adminuser@email.com", admin: true, password: "12345" });
 
         //error, non-admin user trying to change another user's data
-        expect(userServiceNonAdmin.update(userAdmin)).rejects.toThrow("you cannot edit this user");
+        expect(userServiceNonAdmin.update(userNonAdmin)).rejects.toThrow("you cannot edit this user");
         
         //error, non-admin user put a user as an administrator
         //const userNotEdited = await userServiceNonAdmin.update({...userNonAdmin, id: authenticatedUser.id, admin: true });
