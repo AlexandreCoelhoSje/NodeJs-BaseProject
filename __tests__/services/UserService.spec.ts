@@ -1,4 +1,3 @@
-import exp from "constants";
 import { IAuthenticatedUser } from "../../src/interfaces/message/IAuthenticatedUser";
 import { UserService } from "../../src/services/UserService";
 
@@ -60,7 +59,7 @@ describe("test UserService", () => {
         expect(userFound).toBe(user);
 
         //error case, user not found
-        const userNotFound = await userService.findOne("123121212");
+        const userNotFound = await userService.findOne("00000");
 
         expect(userNotFound).toBeUndefined();
     });
@@ -106,7 +105,7 @@ describe("test UserService", () => {
         const userAdmin = await userService.create({ name: "Test Admin", email: "adminuserdelete@email.com", admin: true, password: "12345" });
 
         //success case, user is deleted
-        const user = await userService.delete(userNonAdmin.id);
+        await userService.delete(userNonAdmin.id);
 
         //error case, user is admin
         expect(userService.delete(userAdmin.id)).rejects.toThrow("You do not have permission to delete this user");
